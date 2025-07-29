@@ -1,29 +1,21 @@
-function getUsers() {
-  // retorna una promesa...
-  return new Promise((resolve, reject) => {
-    // que después de 300ms...
-    setTimeout(() => {
-      // se resuelve con un string con formato JSON
-      let json = `[
-        {"id": 1, "name": "Leanne Graham", "email": "Sincere@april.biz"},
-        {"id": 2, "name": "Ervin Howell", "email": "Shanna@melissa.tv"}
-      ]`;
+let url = "https://jsonplaceholder.typicode.com/users";
 
-      resolve(json);
-    }, 300);
+fetch(url)
+  .then((response) => {
+    // verificar si la respuesta fue exitosa
+    if (!response.ok) throw new Error(response.status);
+
+    // Procesar el cuerpo como JSON
+    return response.json();
+  })
+  .then((users) => {
+    users.forEach((user) => {
+      const div = document.querySelector("#users");
+      const p = document.createElement("p");
+      p.textContent = `Nombre:${user.name} - Email:${user.email}`;
+      div.append(p);
+    });
+  })
+  .catch((error) => {
+    console.log(error.message);
   });
-}
-
-getUsers().then((json) => console.log(json));
-
-getUsers().then((json) => {
-  const users = JSON.parse(json);
-
-  const div = document.querySelector("#users");
-
-  users.forEach((user) => {
-    const p = document.createElement("p");
-    p.textContent = `ID:${user.id} - Nombre:${user.name} - Email: ${user.email}`;
-    div.append(p);
-  });
-});
