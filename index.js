@@ -1,17 +1,31 @@
-function getUsers() {
-  // retorna una promesa...
-  return new Promise((resolve, reject) => {
-    // que después de 300ms...
-    setTimeout(() => {
-      // se resuelve con un string con formato JSON
-      let json = `[
-        {"id": 1, "name": "Leanne Graham", "email": "Sincere@april.biz"},
-        {"id": 2, "name": "Ervin Howell", "email": "Shanna@melissa.tv"}
-      ]`;
- 
-      resolve(json);
-    }, 300);
-  });
-}
+// capturar formulario
+const form = document.forms.register;
 
-getUsers().then{(json) => console.log(json)}
+// agregar handler a evento submit
+form.onsubmit = function (event) {
+  // prevenir comportamiento por defecto
+  event.preventDefault();
+
+  // obtener el valor de los elementos de control
+  const name = form.elements.name.value;
+  const email = form.elements.email.value;
+
+  // URL de destino
+  const url = "https://mocktarget.apigee.net/echo";
+
+  // Opciones para fetch
+  const options = {
+    method: "POST", // método HTTP a utilizar
+    body: JSON.stringify({ name, email }), // cuerpo de la petición
+    headers: {
+      // encabezados de la petición HTTP
+      "Content-Type": "application/json",
+    },
+  };
+
+  // Realizar petición
+  fetch(url, options)
+    .then((response) => response.json())
+    .then(console.log)
+    .catch(console.error);
+};
