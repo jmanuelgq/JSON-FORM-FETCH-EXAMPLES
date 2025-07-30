@@ -1,5 +1,40 @@
+function saveForm(form) {
+  const formData = new FormData(form);
+  //   const formDataObject = {};
+
+  //   for (const [key, value] of formData.entries()) {
+  //     formDataObject[key] = value;
+  //   }
+  const formDataObject = Object.fromEntries(formData.entries());
+  localStorage.setItem("formData", JSON.stringify(formDataObject));
+}
+
+function loadForm(form) {
+  const savedData = localStorage.getItem("formData");
+
+  // Es posible que la llave 'formData' aún no exista en localStorage
+  if (savedData) {
+    // Parseamos el JSON para convertirlo en un objeto
+    const formDataObject = JSON.parse(savedData);
+
+    // Recorremos cada pareja llave-valor del objeto
+    for (const [key, value] of Object.entries(formDataObject)) {
+      // Buscamos un campo por su nombre
+      const formField = form.querySelector(`[name="${key}"]`);
+
+      // Si el campo existe, asignamos su valor
+      if (formField) {
+        formField.value = value;
+      }
+    }
+  }
+}
+
 // capturar formulario
 const form = document.forms.register;
+loadForm(form);
+
+form.addEventListener("change", (_event) => saveForm(form));
 
 // agregar handler a evento submit
 form.onsubmit = function (event) {
@@ -26,6 +61,9 @@ form.onsubmit = function (event) {
   // Realizar petición
   fetch(url, options)
     .then((response) => response.json())
-    .then(console.log)
+    .then((data) => {
+      form.reset();
+      localStorage.removeItem("formData");
+    })
     .catch(console.error);
 };
